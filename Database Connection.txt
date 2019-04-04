@@ -1,0 +1,193 @@
+Connected Connection to The database in asp.net
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+
+public partial class _Default : Page
+{
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+    }
+    protected void TextBox6_TextChanged(object sender, EventArgs e)
+    {
+
+    }
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=(localdb)\v11.0;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False");
+            con.Open();
+           // SqlDataReader dr;
+
+            string insert = "insert into table1(user_id,first_name,last_name,email,password,emp_type) values(@p1,@p2,@p3,@p4,@p5,@p6)";
+            SqlCommand cmd = new SqlCommand(insert, con);
+            cmd.Parameters.AddWithValue("@p1", TextBox1.Text);
+            cmd.Parameters.AddWithValue("@p2", TextBox2.Text);
+            cmd.Parameters.AddWithValue("@p3", TextBox3.Text);
+            cmd.Parameters.AddWithValue("@p4", TextBox4.Text);
+            cmd.Parameters.AddWithValue("@p5", TextBox5.Text);
+            cmd.Parameters.AddWithValue("@p6", TextBox6.Text);
+            cmd.ExecuteNonQuery();
+            Response.Write("Student registeration Successfully!!!thank you");
+            con.Close();
+        }
+        catch (Exception ex)
+        {
+            Response.Write("error" + ex.ToString());
+        }  
+    }
+    protected void Login1_Authenticate(object sender, AuthenticateEventArgs e)
+    {
+
+    }
+}
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace Question_Paper_Generator
+{
+    public partial class SignInUser : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+     
+             SqlConnection con = new SqlConnection(@"Data Source=(localdb)\Projects;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False");
+             con.Open();
+            SqlCommand cmd = new SqlCommand("select * from userdetails where userid = @username and password = @password;",con);
+            
+            cmd.Parameters.AddWithValue("@username", empidTB.Text);
+            cmd.Parameters.AddWithValue("@password", passwordTB.Text);
+            cmd.Connection = con;
+            
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count > 0)
+
+            {
+                Session.Add("Userid", empidTB.Text);
+                Response.Redirect("~/UserHomePage.aspx");
+            }
+            else
+            {
+                Response.Write("Invalid username or password!!!!!!!!!");
+            }
+       
+        }
+    }
+}
+
+
+====================================================================================================================================
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace WebApplication3
+{
+    public partial class Login : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void LoginBT_Click(object sender, EventArgs e)
+        {
+
+            SqlConnection con = new SqlConnection(@"Data Source=(localdb)\v11.0;Initial Catalog=QPGdb;Integrated Security=True;Pooling=False");
+            con.Open();
+            SqlCommand cmd = new SqlCommand("select * from userdetails where userid = @username and password = @password;", con);
+
+            cmd.Parameters.AddWithValue("@username", empidTB.Text);
+            cmd.Parameters.AddWithValue("@password", passwordTB.Text);
+            cmd.Connection = con;
+
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count > 0)
+            {
+                //Response.Write("ho gaya");
+                Session.Add("Userid", empidTB.Text);
+                Response.Redirect("~/index.aspx");
+            }
+            else
+            {
+               // Response.Write("nhe ho gaya");
+             
+                myMessage("Invalid User Details!!!!");
+                empidTB.Text = "";
+                passwordTB.Text = "";
+                
+            }
+       
+        }
+        public void myMessage(string msg)
+        {
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            sb.Append("<script type = 'text/javascript'>");
+            sb.Append("window.onload = function(){");
+            sb.Append("alert('");
+            sb.Append(msg);
+            sb.Append("')};");
+            sb.Append("</script>");
+            ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", sb.ToString());
+        }
+
+
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
